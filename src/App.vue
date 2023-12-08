@@ -14,7 +14,7 @@ import TheWelcome from './components/TheWelcome.vue'
     </header>
 
     <main>
-      <TheWelcome />
+      你好，索小索
     </main>
   </div>
 </template>
