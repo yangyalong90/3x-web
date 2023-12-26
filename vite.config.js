@@ -6,7 +6,6 @@ import vue2 from '@vitejs/plugin-vue2'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/3x',
   plugins: [
     vue2(),
     legacy({
@@ -21,10 +20,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/3x": {
-        target: "http://localhost:8081",
+      "/mng": {
+        target: "http://localhost:8080",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/3x/, ""),
+        rewrite: (path) => path.replace(/^\/mng/, ""),
       },
     },
   }

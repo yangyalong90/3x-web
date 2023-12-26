@@ -1,25 +1,18 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <div id="app">
-    <header>
-      <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-      <div class="wrapper">
-        <HelloWorld msg="You did it!" />
-      </div>
-    </header>
-
-    <main>
-      你好，索小索
-    </main>
+  <div id="app" class="fx-row-center">
+    <div class="app-contain">
+      <router-view />
+    </div>
   </div>
 </template>
 
-<style scoped>
+<script >
+export default {
+  name: 'app',
+}
+</script>
+
+<style scoped src="./assets/main.css">
 header {
   line-height: 1.5;
 }
