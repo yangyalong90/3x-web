@@ -1,14 +1,30 @@
 <template>
   <div> 
     <div class="fx-row-end">
-      <el-button type="text"> 明细汇总 </el-button>
+      
+      <el-upload
+        class="upload-demo"
+        action="http://0.0.0.0"
+        :before-upload="beforeUploadFund">
+        <el-button type="text"> 资金核对 </el-button>
+      </el-upload>
     </div>  
     <div>
       <el-tabs v-model="activeType" @tab-click="handleTabClick">
-        <el-tab-pane v-for="type in typeList" :label="type" :name="type" :key="type"></el-tab-pane>
+        <el-tab-pane v-for="type in typeList" :label="type" :name="type" :key="type">
+        
+        </el-tab-pane>
       </el-tabs>
       <div>
-        <el-table :data="dataList">
+        <div style="display: flex; flex-direction: row; justify-content: flex-end;">
+          <el-upload
+            class="upload-demo"
+            action="http://0.0.0.0"
+            :before-upload="beforeUploadDetail">
+            <el-button type="text"> 清单上传 </el-button>
+          </el-upload>
+        </div>
+        <el-table :data="dataList" height="80vh">
           <el-table-column v-for="column in activeColumns" :label="column" :prop="column" :key="column"></el-table-column>
         </el-table>
       </div>
@@ -33,6 +49,7 @@ export default {
         '视频',
         '投资大学',
         '专栏',
+        '圈子',
       ],
       typeColumns: {
         '充值': [
@@ -143,6 +160,26 @@ export default {
           '订单渠道',
           '下单时间',
         ],
+        '圈子': [
+          '会员头像',
+          '买家昵称',
+          '会员电话',
+          '圈子',
+          '购买份数',
+          '实付金额',
+          '赠送币金额',
+          '退款金额',
+          '平账金额',
+          '有效期',
+          '订单号',
+          '支付渠道',
+          '支付时间',
+          '推广来源',
+          '端',
+          '订单来源',
+          '社群推广',
+          '部门类别',
+        ]
       },
 
     }
@@ -155,6 +192,51 @@ export default {
     this.activeTypeChange();
   },
   methods: {
+    beforeUploadDetail(file) {
+      console.log(file);
+      const form = new FormData();
+      form.append('file', file);
+      form.append('checkId', this.checkId);
+      form.append('type', this.activeType);
+      this.$http({
+        url: '/suo/fundCheck/importDetail',
+        method: 'post',
+        data: form,
+      }).then(res => {
+        this.$notify({
+          type: 'success',
+          message: '上传成功'
+        })
+        this.getDataList();
+      })
+      return false;
+    },
+    beforeUploadFund(file) {
+      console.log(file);
+      const form = new FormData();
+      form.append('file', file);
+      form.append('checkId', this.checkId);
+      this.$http({
+        url: '/suo/fundCheck/analysis',
+        method: 'post',
+        data: form,
+        responseType: 'blob',
+      }).then(res => {
+        const blob = new Blob([res]);
+        let blobUrl = window.URL.createObjectURL(blob);
+        const fileName = `${new Date().valueOf()}.xlsx`;
+        let link = document.createElement('a')
+        link.download = fileName;
+        link.style.display = 'none';
+        link.href = blobUrl;
+        // 触发点击
+        document.body.appendChild(link)
+        link.click()
+        // 移除
+        document.body.removeChild(link)
+      })
+      return false;
+    },
     handleTabClick() {
       this.activeTypeChange();
     },
